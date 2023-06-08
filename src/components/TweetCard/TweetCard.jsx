@@ -1,8 +1,10 @@
 import { formatNumber } from "../../services/FetchUser";
-import css from "./TweetCard.module.css";
-import image from "../../images/Picture.jpg";
+
+import img from "../../images/Picture.jpg";
 import logo from "../../images/Logo.jpg";
 import avatar from "../../images/Boy.jpg";
+
+import css from "./TweetCard.module.css";
 
 export const TweetCard = ({ user, onFollow }) => {
   const followers = formatNumber(user.followers);
@@ -17,7 +19,7 @@ export const TweetCard = ({ user, onFollow }) => {
   return (
     <li className={css.item}>
       <img src={logo} alt="logo" className={css.logo} />
-      <img src={image} alt="question mark and exclamation mark" className={css.image} />
+      <img src={img} alt="question mark and exclamation mark" className={css.image} />
       <img src={avatarSource} alt={user.user} className={css.avatar} />
       <div className={css.tagline}></div>
       <div className={css.box}>

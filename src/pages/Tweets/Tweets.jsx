@@ -1,32 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { TweetCard } from '../../components/TweetCard/TweetCard';
+import React, { useEffect, useState, useRef } from 'react';
+import { useLocation, Link } from 'react-router-dom';
+
 import { fetchUser, putUser } from '../../services/FetchUser';
+
+import { TweetCard } from '../../components/TweetCard/TweetCard';
 import { Loader } from '../../components/Loader';
+
+import Notiflix from 'notiflix';
+
 import css from './Tweets.module.css';
-import { toast } from 'react-toastify';
 
 export default function Tweets() {
-  const navigate = useNavigate();
+  const location = useLocation();
+  const toBack = useRef(location.state?.from ?? '/');
 
   const [users, setUsers] = useState([]);
   const [visibleUsers, setVisibleUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [showLoadMore, setShowLoadMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const usersPrewPage = 3;
+  const [loadMore, setLoadMore] = useState(true);
+  const usersPrewPage = 6;
 
   useEffect(() => {
     const fetchAllUsers = async () => {
       setIsLoading(true);
       try {
-        const allUsers = await fetchUser();
-        setUsers(allUsers);
-        setVisibleUsers(allUsers.slice(0, usersPrewPage));
-        setShowLoadMore(allUsers.length > usersPrewPage);
+        const users = await fetchUser();
+        setUsers(users);
+        setVisibleUsers(users.slice(0, usersPrewPage));
+        setLoadMore(users.length > usersPrewPage);
       } catch (error) {
-        toast.error('Something went wrong... Please try again later.');
+        Notiflix.Notify.failure('Oops. Something went wrong...');
         setIsError(true);
       } finally {
         setIsLoading(false);
@@ -42,7 +47,7 @@ export default function Tweets() {
     const newVisibleUsers = users.slice(0, endIndex);
     setVisibleUsers(newVisibleUsers);
     setCurrentPage(nextPage);
-    setShowLoadMore(newVisibleUsers.length < users.length);
+    setLoadMore(newVisibleUsers.length < users.length);
   };
 
   const onFollow = async (id) => {
@@ -62,15 +67,11 @@ export default function Tweets() {
     }
   };
 
-  const handleBack = () => {
-    navigate(-1); 
-  };
-
   return (
     <div>
-      <button type="button" onClick={handleBack} className={css.backButton}>
+      <Link to={toBack.current} className={css.backBtn}>
         Back
-      </button>
+      </Link>
       <ul className={css.list}>
         {visibleUsers.map((user) => (
           <TweetCard
@@ -85,7 +86,7 @@ export default function Tweets() {
       {isLoading ? (
         <Loader />
       ) : (
-        !isError && showLoadMore && (
+        !isError && loadMore && (
           <button type="button" onClick={loadMoreUsers} className={css.button}>
             Load More
           </button>

@@ -1,43 +1,33 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import css from './Layout.module.css';
-import styled from 'styled-components';
+
 import { Suspense } from 'react';
 import { Loader } from './components/Loader';
 
-const StyledLink = styled(NavLink)`
-  &.active {
-    color: rgb(141, 4, 130);
-  }
-  &.active:hover,
-  :focus {
-    color: #b800a8;
-  }
-`;
-
-export const Layout = () => {
+export default function Layout () {
 
   return (
-    <div className={css.overlay}>
-      <div className={css.nav_box}>
+    <div className={css.box}>
+      <header className={css.header}>
         <nav className={css.navigation}>
           <ul className={css.nav_list}>
             <li className={css.nav_item}>
 
             </li>
             <li className={css.nav_item}>
-              <StyledLink to="/home" className={css.nav_link}>
+              <NavLink to="/home" className={css.nav_link}>
                 Home
-              </StyledLink>
+              </NavLink>
             </li>
             <li className={css.nav_item}>
-              <StyledLink to="/tweets" className={css.nav_link}>
+              <NavLink to="/tweets" className={css.nav_link}>
                 Tweets
-              </StyledLink>
+              </NavLink>
             </li>
           </ul>
         </nav>
-      </div>
+      </header>
 
       <Suspense fallback={<Loader />}>
         <Outlet />
